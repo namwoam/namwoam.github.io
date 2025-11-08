@@ -25,6 +25,8 @@ Part-time & volunteer work
     - IM1003 Programming Design (2024)
     - IM3014 Linux System Administration Practice — Lead TA (2025)
 - Research Assistant — Academia Sinica, Research Center for Information Technology Innovation (2024)
+- Research Assistant — National Taiwan University, MiRA (2024)
+- Research Assistant — National Taiwan University, NEWS Lab (2023)
 - Lecturer — National Taiwan University, Sprout Program (2021–2023)
 - Electrical Systems Engineer — National Taiwan University Formula SAE Team (2023)
 
