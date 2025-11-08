@@ -1,16 +1,16 @@
 ---
 layout: home
-title: Welcome
+title: About
 ---
 
-## Hello! 👋
+# About
 
-Welcome to my personal website and blog. I'm passionate about technology, coding, and sharing knowledge with the community.
+I am a independent researcher.
 
-### What You'll Find Here
+I like space, robotics, film and music.
 
-- **Blog Posts**: Regular articles about programming, web development, and technology
-- **Projects**: Showcases of my personal and professional projects
-- **Insights**: Thoughts and experiences from my journey in tech
+# Experience
 
-Feel free to explore, and don't hesitate to reach out if you'd like to connect!
+
+
+# Publications

@@ -2,10 +2,9 @@
 layout: default
 ---
 <div class="home">
-    <h1 class="page-heading">{{ page.title }}</h1>
     
     {{ content }}
-    
+    <!--
     <h2 class="post-list-heading">Recent Posts</h2>
     
     {% if site.posts.size > 0 %}
@@ -24,6 +23,7 @@ layout: default
         </li>
         {% endfor %}
     </ul>
+
     
     <p class="rss-subscribe">
         <a href="{{ '/blog/' | relative_url }}">View all posts →</a>
@@ -31,4 +31,9 @@ layout: default
     {% else %}
     <p>No posts yet.</p>
     {% endif %}
+    -->
+    
+    <div class="last-updated">
+        <p><small>Last updated: {{ site.time | date: "%B %-d, %Y" }}</small></p>
+    </div>
 </div>
