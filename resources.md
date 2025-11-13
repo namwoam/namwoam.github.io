@@ -10,8 +10,7 @@ Here are useful resources, primarily course materials I've prepared and compiled
 
 
 ## IM3014 — Linux System Administration Practice
-
-Lab exercises and homework assignments for this course, created and maintained by me.
+Lab exercises and homework for the course, authored and maintained by me. The course is taught by Prof. Hsin-Min Lu.
 
 ### Fall 2025
 
