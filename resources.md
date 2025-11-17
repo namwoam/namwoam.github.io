@@ -36,7 +36,7 @@ Lab exercises and homework for the course, authored and maintained by me. The co
 Course materials for a private study group hosted at NTU, created by me.
 
 - Docker & Kubernetes — [slides](https://docs.google.com/presentation/d/1xClaA7ddvDKyLd6VQLga3AuBkP8wTnoxqmSceknCUNE)
-- Unsupervised Learning - [slides](/files/2025-ds/unsupervised-learning.pdf)
+- Unsupervised Learning — [slides](/files/2025-ds/unsupervised-learning.pdf)
 
 
 ## NTU Sprout Program (Mandarin: 資訊之芽培訓計劃)
