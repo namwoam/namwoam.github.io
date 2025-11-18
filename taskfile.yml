@@ -10,8 +10,8 @@ tasks:
     cmds:
     - |
       if [ -f Gemfile ]; then
-        bundle exec jekyll serve --livereload --drafts --future --port {{.PORT}} --host {{.HOST}}
+        bundle exec jekyll serve --livereload --drafts --future --port {{.PORT}} --host {{.HOST}} --drafts
       else
-        jekyll serve --livereload --drafts --future --port {{.PORT}} --host {{.HOST}}
+        jekyll serve --livereload --drafts --future --port {{.PORT}} --host {{.HOST}} --drafts
       fi
     silent: false

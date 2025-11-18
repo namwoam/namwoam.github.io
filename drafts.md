@@ -1,21 +1,21 @@
 ---
 layout: default
-title: Blog
-permalink: /blog/
+title: Drafts
+permalink: /drafts/
 ---
 
-# Blog
+# Drafts
 
 <div class="post-list">
 {% for post in site.posts %}
-  {% unless post.draft %}
+  {% if post.draft %}
   <div class="post-item">
     <h2>
       <a class="post-link" href="{{ post.url | relative_url }}">
         {{ post.title | escape }}
       </a>
     </h2>
-    <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
+    <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }} <span class="draft-badge">[DRAFT]</span></p>
     {% if post.excerpt %}
       <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 50 }}</p>
     {% endif %}
@@ -27,10 +27,25 @@ permalink: /blog/
       </div>
     {% endif %}
   </div>
-  {% endunless %}
+  {% endif %}
 {% endfor %}
 </div>
 
-{% if site.posts.size == 0 %}
-<p>No posts yet. Check back soon!</p>
+{% assign draft_count = 0 %}
+{% for post in site.posts %}
+  {% if post.draft %}
+    {% assign draft_count = draft_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+
+{% if draft_count == 0 %}
+<p>No drafts at the moment.</p>
 {% endif %}
+
+<style>
+.draft-badge {
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+</style>

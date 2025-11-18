@@ -36,6 +36,10 @@ exclude:
 - vendor/ruby/
 - README.md
 
+# Drafts settings
+# To preview drafts locally: bundle exec jekyll serve --drafts
+# Drafts are stored in _drafts/ folder without dates in filename
+
 # Default front matter
 defaults:
 - scope:
