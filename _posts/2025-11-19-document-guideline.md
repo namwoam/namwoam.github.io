@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "怎麼寫好一份專業的文件？"
-date: 2025-11-08 14:30:00 -0000
+date: 2025-11-19 00:00:00 -0000
 tags: [tutorial, writing]
 excerpt: ""
 draft: false
