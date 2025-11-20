@@ -54,3 +54,8 @@ Course materials from the NTU Sprout Program made by me.
 
 
 
+## Misc
+
+Some random stuff.
+
+- Serving LLMs at Scale (A talk given to NTU AI Club on November 2025) - [slides](https://docs.google.com/presentation/d/1dklfdOh6yBU1DLD1zedFs2n1YbbF6l8iSiZ_A1zLfHs/edit?usp=sharing)
