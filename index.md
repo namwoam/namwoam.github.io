@@ -6,7 +6,7 @@ title: About
 # About
 Hello, I'm An-Che Liang (Mandarin: 梁安哲).
 
-I am a independent researcher.
+I am an independent researcher.
 
 I like space, robotics, film and music.
 
