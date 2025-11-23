@@ -37,6 +37,7 @@ Course materials for a private study group hosted at NTU made by me.
 
 - Docker & Kubernetes — [slides](https://docs.google.com/presentation/d/1xClaA7ddvDKyLd6VQLga3AuBkP8wTnoxqmSceknCUNE)
 - Unsupervised Learning — [slides](/files/2025-ds/unsupervised-learning.pdf)
+- Deep Learning Computer Vision (1): Discriminative Models - [slides](/files/2025-ds/deep-learning-computer-vision_1.pdf)
 
 
 ## NTU Sprout Program (Mandarin: 資訊之芽培訓計劃)
