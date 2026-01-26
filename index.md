@@ -32,6 +32,7 @@ Part-time & volunteer work
 - Teaching Assistant — National Taiwan University
     - IM1003 Programming Design (2024)
     - IM3014 Linux System Administration Practice — Lead TA (2025)
+    - IM3007 Systems Analysis and Design (2026)
 - Techincal Staff — National Taiwan University, AI Club (2024)
 - Research Assistant — Academia Sinica, Research Center for Information Technology Innovation (2024)
 - Research Assistant — National Taiwan University, MiRA (2024)
