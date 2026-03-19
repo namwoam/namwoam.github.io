@@ -12,6 +12,8 @@ I like space, robotics, film and music.
 
 My professional skills include cloud-native application development, LLMs, and embedded systems.
 
+My [resume](./files/resume.pdf).
+
 # Education
 
 - M.S. in Information Management — National Taiwan University<br />Advisor: Prof. Hsin-Min Lu
