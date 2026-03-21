@@ -187,6 +187,37 @@ h3 {
     margin-top: 0.5em;
 }
 
+.pagination {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.pagination-link {
+    color: #2a7ae2;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.pagination-link:hover {
+    text-decoration: underline;
+}
+
+.pagination-link.is-disabled {
+    color: #b5b5b5;
+    pointer-events: none;
+}
+
+.pagination-current {
+    color: #666;
+    font-size: 0.95em;
+    font-weight: 400;
+}
+
 /* Post page */
 .post {
     max-width: 800px;
@@ -350,5 +381,19 @@ a:hover {
 
     .footer-col-wrapper {
         flex-direction: column;
+    }
+
+    .pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .pagination-link {
+        text-align: center;
+    }
+
+    .pagination-current {
+        text-align: center;
     }
 }

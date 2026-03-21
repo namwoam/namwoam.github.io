@@ -16,6 +16,14 @@ plugins:
 - jekyll-feed
 - jekyll-seo-tag
 - jekyll-figure
+- jekyll-paginate-v2
+
+pagination:
+  enabled: true
+  per_page: 5
+  permalink: /page/:num/
+  title: ":title - page :num"
+  sort_reverse: true
 
 # Permalink structure for blog posts
 permalink: /blog/:year/:month/:day/:title/
