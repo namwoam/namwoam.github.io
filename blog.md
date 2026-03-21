@@ -7,7 +7,7 @@ pagination:
   collection: posts
 ---
 
-# Blog
+<h1>Blog</h1>
 
 <div class="post-list">
 {% assign posts = paginator.posts | default: site.posts %}
