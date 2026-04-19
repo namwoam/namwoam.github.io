@@ -44,4 +44,7 @@ Part-time & volunteer work
 
 # Publications
 
-- **Heuristic Algorithms on Flexible Flow Shop with Unrelated Machines, Setup Time, Limited Storage Capacity, and Specification Constraint**<br />An-Che Liang, Wei-Hsiang Huang, Debbie Huang, You-Ming Yeh, Ling-Chieh Kung<br />*CIIE 2025* <br /> [paper](/files/2025_ciie.pdf)
+- **Heuristic Algorithms on Flexible Flow Shop with Unrelated Machines, Setup Time, Limited Storage Capacity, and Specification Constraint**<br />An-Che Liang, Wei-Hsiang Huang, Debbie Huang, You-Ming Yeh and Ling-Chieh Kung<br />*CIIE 2025* <br /> [paper](/files/2025_ciie.pdf)
+
+- **Illuminated Neverland: sculpting an interactive journey through shadows**<br />Cheng-Hsin Han, Xing-Ying Li, Guan-Xiu Jin, An-Che Liang, Yin-Ting Lu, Nil Ponsa i Campanyà, Mike Y. Chen, and Neng-Hao Yu<br /> *preprint* <br /> [paper](/files/2025_siggraph.pdf)<br />
+[video](https://drive.google.com/file/d/1ix0NzUjRt7VAZ-RGLPyIQ6TDiRMNC9ba/view?usp=drive_link)
