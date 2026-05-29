@@ -24,7 +24,7 @@ My [resume](./files/resume.pdf).
 
 Full-time experiences
 
-- Machine Learning Engineer Intern — NetBase Quid (Sep 2024–present)
+- Machine Learning Engineer Intern — NetBase Quid (Sep 2024–May 2025)
 - AI Software Engineer Intern — Instill AI (Jun 2024–Sep 2024)
 - Embedded Systems Engineer Intern — Taiwan Space Agency (Jun 2023–Sep 2023)
 - Software Engineer Intern - HP (Jun 2021–Sep 2021)

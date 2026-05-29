@@ -8,7 +8,6 @@ permalink: /resources/
 
 A curated collection of resources, primarily course materials I have created or compiled. These materials are available for study and teaching.
 
-
 ## IM3014 — Linux System Administration Practice
 Lab exercises and homework for the course, authored and maintained by me. The course is taught by Prof. Hsin-Min Lu.
 
@@ -30,6 +29,16 @@ Lab exercises and homework for the course, authored and maintained by me. The co
     - [lab](/files/2025-lsap/w11lab.pdf)
     - [homework](/files/2025-lsap/2025_lsap_hw05.pdf)
   
+## IM3007 — Systems Analysis and Design
+Lab exercises and homework for the course, authored and maintained by me. The course is taught by Prof. Hsin-Min Lu.
+
+## Spring 2026
+
+- Week 6 - Virtualization and containers.
+  - [homework](./files/2026-sad/hw2.pdf)
+- Week 11 - DevOps
+  - [lab](https://docs.google.com/presentation/d/1yGX7mvataBa__NRfXFyLVcsWVJ3HVDSX2cdOftJI3Uo)
+  - [homework](./files/2026-sad/hw3.pdf)
 
 ## Data Science Study Group
 
