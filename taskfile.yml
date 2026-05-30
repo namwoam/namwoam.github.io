@@ -5,6 +5,20 @@ vars:
   HOST: "127.0.0.1"
 
 tasks:
+  install:
+    desc: Install Ruby dependencies
+    cmds:
+    - |
+      REQUIRED="3.4.1"
+      CURRENT=$(ruby -e 'puts RUBY_VERSION' 2>/dev/null)
+      if [ "$CURRENT" != "$REQUIRED" ]; then
+        echo "Error: Ruby $REQUIRED is required, but found $CURRENT."
+        echo "Please switch to Ruby $REQUIRED (e.g. via rbenv: rbenv local $REQUIRED)"
+        exit 1
+      fi
+      bundle install
+    silent: false
+
   dev:
     desc: Serve local Jekyll server (uses bundle exec if Gemfile exists)
     cmds:

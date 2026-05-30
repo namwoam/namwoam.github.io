@@ -9,6 +9,9 @@ gem "minima", "~> 2.5"
 # GitHub Pages gem (optional, includes all GitHub Pages dependencies)
 gem "github-pages", group: :jekyll_plugins
 
+# Ruby 2.6 does not support ffi 1.17.4+
+gem "ffi", "~> 1.16"
+
 # Jekyll plugins
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
