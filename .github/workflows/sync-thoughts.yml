@@ -1,0 +1,34 @@
+name: Sync Thoughts from TinyMind
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch thoughts.json
+        run: |
+          curl -fsSL \
+            https://raw.githubusercontent.com/namwoam/tinymind-blog/main/content/thoughts.json \
+            -o _data/thoughts.json
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _data/thoughts.json
+          if git diff --staged --quiet; then
+            echo "No changes to thoughts.json"
+          else
+            git commit -m "chore: sync thoughts from tinymind-blog"
+            git push
+          fi
