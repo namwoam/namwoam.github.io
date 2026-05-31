@@ -20,7 +20,7 @@ tasks:
     silent: false
 
   dev:
-    desc: Serve local Jekyll server (uses bundle exec if Gemfile exists)
+    desc: Serve local Jekyll server (uses bundle exec if Gemficle exists)
     cmds:
     - |
       if [ -f Gemfile ]; then
