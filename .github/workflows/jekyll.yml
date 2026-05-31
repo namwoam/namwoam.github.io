@@ -1,11 +1,13 @@
 name: Deploy Jekyll site to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
+  workflow_run:
+    workflows: ["Sync Thoughts from TinyMind"]
+    types: [completed]
+
   workflow_dispatch:
 
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -26,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
