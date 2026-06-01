@@ -146,7 +146,8 @@ Make some noise every morning. [^1]
 }
 .modal-close-btn:hover { color: #111; }
 
-.modal-embed { padding: 0 1rem 0.5rem; }
+.modal-embed { padding-bottom: 0.5rem; }
+#spotify-embed-container iframe { display: block; margin: 0 1rem; width: calc(100% - 2rem) !important; }
 
 .modal-quote {
   padding: 0.75rem 1.2rem 1.25rem;
