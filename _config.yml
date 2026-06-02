@@ -34,6 +34,10 @@ collections:
     output: true
     permalink: /blog/:year/:month/:day/:title/
 
+# Force-include model directory (Jekyll skips _-prefixed dirs by default)
+include:
+- _model
+
 # Exclude from processing
 exclude:
 - Gemfile
