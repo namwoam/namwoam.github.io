@@ -30,6 +30,13 @@ permalink: /pulsar/
   letter-spacing: 0.04em;
 }
 .p-meta { font-size: 0.8rem; color: #828282; margin: 0; }
+.p-model-license {
+  font-size: 0.72rem;
+  color: #aaa;
+  line-height: 1.5;
+  max-width: 34rem;
+}
+.p-model-license a { color: #828282; }
 
 .p-progress-label { font-size: 0.78rem; color: #828282; margin-bottom: 0.3rem; }
 .p-progress-bar { height: 2px; max-width: 260px; background: #e8e8e8; border-radius: 2px; }
@@ -152,6 +159,15 @@ permalink: /pulsar/
   <div class="p-idle-inner">
     <button id="btn-connect" class="p-btn p-btn-primary">Talk to a Pulsar</button>
     <span id="model-hint" class="p-model-hint">preparing…</span>
+    <div class="p-model-license">
+      Local model based on
+      <a href="https://huggingface.co/litert-community/gemma-3-270m-it">litert-community/gemma-3-270m-it</a>,
+      subject to the
+      <a href="https://ai.google.dev/gemma/terms">Gemma Terms of Use</a>
+      and
+      <a href="https://ai.google.dev/gemma/prohibited_use_policy">Gemma Prohibited Use Policy</a>.
+      <a href="{{ '/_model/NOTICE.txt' | relative_url }}">Notice</a>.
+    </div>
   </div>
 </div>
 

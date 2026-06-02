@@ -1,4 +1,11 @@
 {
+  "model": "litert-community/gemma-3-270m-it",
+  "source": "https://huggingface.co/litert-community/gemma-3-270m-it",
+  "license": "gemma",
+  "terms": "https://ai.google.dev/gemma/terms",
+  "prohibitedUsePolicy": "https://ai.google.dev/gemma/prohibited_use_policy",
+  "notice": "NOTICE.txt",
+  "modificationNotice": "The original LiteRT model artifact was split into chunk_00, chunk_01, and chunk_02 for static web hosting. The model weights were not otherwise modified.",
   "chunks": ["chunk_00", "chunk_01", "chunk_02"],
   "totalSize": 276168704
 }

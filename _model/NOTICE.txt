@@ -1,0 +1,16 @@
+Gemma is provided under and subject to the Gemma Terms of Use found at ai.google.dev/gemma/terms
+
+Model source:
+https://huggingface.co/litert-community/gemma-3-270m-it
+
+Terms of use:
+https://ai.google.dev/gemma/terms
+
+Use restrictions:
+Gemma and Model Derivatives are subject to the use restrictions in Section 3.2 of the Gemma Terms of Use and the Gemma Prohibited Use Policy:
+https://ai.google.dev/gemma/prohibited_use_policy
+
+Modification notice:
+The original LiteRT model artifact from litert-community/gemma-3-270m-it was split into chunk_00, chunk_01, and chunk_02 for static web hosting. The model weights were not otherwise modified.
+
+The model chunks in this directory are distributed with this notice file and manifest metadata so recipients can identify the model source, applicable terms, use restrictions, and modification notice.
