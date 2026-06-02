@@ -258,10 +258,10 @@ function makeLcg(seed) {
 
 // ── Star name ────────────────────────────────────────────
 const PREFIXES = [
-  'Kepler','Orion','Vega','Sirius','Andromeda',
-  'Cassiopeia','Lyra','Cepheus','Altair','Betelgeuse',
-  'Rigel','Polaris','Taurus','Cygnus','Pleiades',
-  'Draco','Aquila','Sagittarius','Proxima',
+  'Pleiades','Hyades','Praesepe','Coma','AlphaPersei',
+  'DoubleCluster','OmegaCentauri','Hercules','Beehive','WildDuck',
+  'JewelBox','Butterfly','Lagoon','Trapezium','Quintuplet',
+  'Arches','Westerlund','M35','M47','M67',
 ];
 const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
 const HEX   = '0123456789abcdef';
