@@ -273,7 +273,7 @@ function genStarName() {
   const l1     = ALPHA[Math.floor(r() * 26)];
   const l2     = ALPHA[Math.floor(r() * 26)];
   const hex    = Array.from({length: 4}, () => HEX[Math.floor(r() * 16)]).join('');
-  return `${prefix}-${digit}${l1}${l2}${hex}`;
+  return `${prefix}-${digit}${l1}${l2}#${hex}`;
 }
 function genDistance(name) {
   return ((djb2(name) % 8000) + 500).toLocaleString();
