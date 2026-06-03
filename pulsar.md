@@ -113,36 +113,12 @@ permalink: /pulsar/
   padding-top: 1rem;
   border-top: 1px solid #e8e8e8;
 }
-.p-input-tabs { display: flex; gap: 1.2rem; margin-bottom: 0.8rem; }
-.p-tab {
-  background: none; border: none; color: #828282; cursor: pointer;
-  font-size: 0.8rem; font-family: inherit; padding: 0 0 3px;
-  border-bottom: 2px solid transparent;
-  transition: color 0.12s, border-color 0.12s;
-}
-.p-tab.active { color: #333; border-bottom-color: #424242; }
-.p-tab:hover:not(.active) { color: #555; }
-.p-tab-content[hidden] { display: none; }
-
 .p-textarea {
   width: 100%; border: 1px solid #e0e0e0; background: #fff;
   font-family: inherit; font-size: 0.9rem; color: #333;
   padding: 0.5rem 0.75rem; border-radius: 4px; resize: vertical; line-height: 1.6;
 }
 .p-textarea:focus { outline: none; border-color: #aaa; }
-
-.p-img-drop {
-  border: 1px dashed #e0e0e0; border-radius: 4px;
-  padding: 1.5rem; text-align: center; font-size: 0.85rem; color: #828282;
-  cursor: pointer; transition: border-color 0.15s, background 0.15s;
-}
-.p-img-drop:hover, .p-img-drop.drag-over { border-color: #424242; background: #fafafa; }
-.p-img-drop.has-image { padding: 0.5rem; border-style: solid; }
-#img-canvas { max-width: 100%; max-height: 180px; border-radius: 3px; display: block; margin: 0 auto; }
-#img-canvas[hidden] { display: none; }
-
-.p-audio-area { display: flex; flex-direction: column; gap: 0.6rem; }
-.p-waveform { font-family: 'Courier New', monospace; font-size: 0.68rem; color: #aaa; min-height: 1rem; }
 
 .p-input-footer { display: flex; justify-content: flex-end; margin-top: 0.75rem; }
 
@@ -153,19 +129,16 @@ permalink: /pulsar/
 .p-lost-star { font-family: 'Courier New', monospace; font-size: 0.72rem; color: #bbb; margin: 0 0 1rem; }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js"></script>
-
 <div id="screen-idle" class="p-screen">
   <div class="p-idle-inner">
     <button id="btn-connect" class="p-btn p-btn-primary">Talk to a Pulsar</button>
     <span id="model-hint" class="p-model-hint">preparing…</span>
     <div class="p-model-license">
       Local model based on
-      <a href="https://huggingface.co/litert-community/gemma-3-270m-it">litert-community/gemma-3-270m-it</a>,
+      <a href="https://huggingface.co/LiquidAI/LFM2.5-350M-ONNX">LiquidAI/LFM2.5-350M-ONNX</a>
+      Q4,
       subject to the
-      <a href="https://ai.google.dev/gemma/terms">Gemma Terms of Use</a>
-      and
-      <a href="https://ai.google.dev/gemma/prohibited_use_policy">Gemma Prohibited Use Policy</a>.
+      <a href="https://huggingface.co/LiquidAI/LFM2.5-350M-ONNX/blob/main/LICENSE">LFM 1.0 License</a>.
       <a href="{{ '/_model/NOTICE.txt' | relative_url }}">Notice</a>.
     </div>
   </div>
@@ -201,27 +174,7 @@ permalink: /pulsar/
     </div>
   </div>
   <div id="input-area" class="p-input-area">
-    <div class="p-input-tabs">
-      <button class="p-tab active" data-tab="text">Text</button>
-      <button class="p-tab" data-tab="image">Image</button>
-      <button class="p-tab" data-tab="audio">Audio</button>
-    </div>
-    <div id="tab-text" class="p-tab-content">
-      <textarea id="msg-input" class="p-textarea" placeholder="Enter message…" rows="3" maxlength="500"></textarea>
-    </div>
-    <div id="tab-image" class="p-tab-content" hidden>
-      <div id="img-drop" class="p-img-drop">
-        <span id="img-drop-label">Drop image or <label for="img-file-input" style="cursor:pointer;color:#2a7ae2">select file</label></span>
-        <canvas id="img-canvas" hidden></canvas>
-        <input type="file" id="img-file-input" accept="image/*" style="display:none">
-      </div>
-    </div>
-    <div id="tab-audio" class="p-tab-content" hidden>
-      <div class="p-audio-area">
-        <button id="btn-record" class="p-btn">⬤ Record (5s)</button>
-        <div id="waveform-display" class="p-waveform"></div>
-      </div>
-    </div>
+    <textarea id="msg-input" class="p-textarea" placeholder="Enter message…" rows="3" maxlength="500"></textarea>
     <div class="p-input-footer">
       <button id="btn-send" class="p-btn p-btn-primary" disabled>Transmit →</button>
     </div>
@@ -237,13 +190,30 @@ permalink: /pulsar/
 
 <script type="module">
 
-import { FilesetResolver, LlmInference }
-  from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai@0.10.22/genai_bundle.mjs';
+import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.23.2/dist/ort.webgpu.min.mjs';
+import { AutoTokenizer, env as hfEnv }
+  from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/dist/transformers.min.js';
 
-const MEDIAPIPE_WASM = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai@0.10.22/wasm';
+const MODEL_ID       = 'LiquidAI/LFM2.5-350M-ONNX';
 const MODEL_BASE     = '{{ "/_model" | relative_url }}';
-const MODEL_CACHE    = 'pulsar-model-v1';
-const ASSEMBLED_KEY  = `${MODEL_BASE}/assembled`;
+const ONNX_MODEL_URL = `${MODEL_BASE}/model_q4.onnx`;
+const ONNX_DATA_URL  = `${MODEL_BASE}/model_q4.onnx_data`;
+
+const MAX_NEW_TOKENS      = 512;
+const TARGET_WORDS        = 24;
+const TEMPERATURE         = 0.7;
+const TOP_K               = 128;
+const REPETITION_PENALTY  = 1.05;
+const LFM_HIDDEN_SIZE     = 1024;
+const LFM_NUM_KV_HEADS    = 8;
+const LFM_HEAD_DIM        = 64;
+
+ort.env.wasm.numThreads = 1;
+ort.env.debug = false;
+ort.env.logLevel = 'error';
+hfEnv.allowLocalModels = true;
+hfEnv.allowRemoteModels = false;
+hfEnv.localModelPath = '';
 
 // ── Utilities ────────────────────────────────────────────
 function djb2(str) {
@@ -295,57 +265,66 @@ function corruptText(text, starName) {
   return pre + body;
 }
 
-function applyCanvasCorruption(canvas, starName) {
-  const ctx = canvas.getContext('2d');
-  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const d = img.data, W = canvas.width;
-  const rng = makeLcg(djb2(starName));
-  for (let y = 0; y < canvas.height; y++) {
-    if (rng() < 0.12) {
-      const sh = Math.floor(rng() * 18) + 4;
-      for (let x = W - 1; x >= sh; x--) {
-        const s = (y * W + x - sh) * 4, t = (y * W + x) * 4;
-        d[t] = d[s]; d[t+1] = d[s+1]; d[t+2] = d[s+2];
-      }
-    }
-    if (rng() < 0.04) {
-      for (let x = 0; x < W; x++) {
-        const i = (y * W + x) * 4;
-        d[i]   = Math.min(255, d[i]   + Math.floor(rng() * 120));
-        d[i+1] = Math.max(0,   d[i+1] - Math.floor(rng() * 80));
-      }
-    }
-  }
-  ctx.putImageData(img, 0, 0);
-}
-
-function dominantHex(canvas) {
-  const t = Object.assign(document.createElement('canvas'), {width:8,height:8});
-  t.getContext('2d').drawImage(canvas, 0, 0, 8, 8);
-  const d = t.getContext('2d').getImageData(0,0,8,8).data;
-  let r=0,g=0,b=0,n=d.length/4;
-  for (let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
-  return ((Math.round(r/n)<<16)|(Math.round(g/n)<<8)|Math.round(b/n)).toString(16).padStart(6,'0');
-}
-function ampToWave(amps) {
-  const b='▁▂▃▄▅▆▇█';
-  return amps.map(v=>b[Math.min(7,Math.floor(v*8))]).join('');
-}
-
 function buildPrompt(corrupted, name, dist, idx) {
   const left = 2 - idx;
-  return `You are pulsar ${name}, a rotating neutron star ${dist} light-years away. ` +
-    `A signal reached you, partially degraded crossing ${dist} light-years of interstellar medium:\n\n` +
-    `"${corrupted}"\n\n` +
-    `Respond briefly (2–3 sentences) as this ancient cosmic entity — curious, poetic, slightly alien. ` +
-    (left === 0 ? `This is the final transmission; your beam rotates away. Say something final.`
-                : `${left} transmission${left>1?'s':''} remain before your beam rotates away.`);
+  return [
+    `You are ${name}, a distant pulsar ${dist} light-years from Earth.`,
+    `The user sent a noisy radio message. Damaged symbols are static; let the message stir an abstract transmission.`,
+    `Noisy message: ${JSON.stringify(corrupted)}`,
+    `Return exactly 24 poetic words, separated by commas.`,
+    `Ignore grammar. Do not write sentences. Do not explain.`,
+    `Use stark cosmic words like time, space, gene, war, dust, orbit, bone, tide, signal, ash.`,
+    left === 0
+      ? `Make the final words feel like farewell.`
+      : `${left} transmissions remain after this one.`,
+  ].join('\n');
+}
+
+const POETIC_WORDS = [
+  'time','space','gene','war','dust','orbit','bone','tide',
+  'signal','ash','star','void','blood','ice','memory','pulse',
+  'stone','dream','iron','seed','night','echo','gravity','flame',
+  'silence','wave','skin','comet','rift','light','salt','horizon',
+];
+
+function normalizePulsarWords(text, seedText) {
+  const words = extractPulsarWords(text);
+
+  const rng = makeLcg(djb2(seedText));
+  while (words.length < TARGET_WORDS) {
+    words.push(POETIC_WORDS[Math.floor(rng() * POETIC_WORDS.length)]);
+  }
+  return words.slice(0, TARGET_WORDS).join(', ');
+}
+
+function extractPulsarWords(text) {
+  return text
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[_/|]+/g, ' ')
+    .split(/[^A-Za-z]+/)
+    .map(w => w.trim().toLowerCase())
+    .filter(w => w.length > 1 && !['the','and','are','you','user','speaker','alien'].includes(w));
 }
 
 // ── Music (Tone.js global) ───────────────────────────────
 const SCALES = [[0,2,4,7,9],[0,2,3,7,10],[0,2,4,5,7,9],[0,2,3,5,7,9,10]];
 
 let activeAudio = null;
+let toneReadyPromise = null;
+
+function ensureTone() {
+  if (typeof Tone !== 'undefined') return Promise.resolve();
+  if (!toneReadyPromise) {
+    toneReadyPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js';
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Tone.js failed to load'));
+      document.head.appendChild(script);
+    });
+  }
+  return toneReadyPromise;
+}
 
 function stopActiveAudio() {
   if (!activeAudio) return;
@@ -364,6 +343,7 @@ function setReplayButtonsDisabled(disabled) {
 }
 
 async function synthesize(text, starName) {
+  await ensureTone().catch(() => {});
   if (typeof Tone === 'undefined') return;
   stopActiveAudio();
   await Tone.start();
@@ -523,6 +503,7 @@ async function synthesize(text, starName) {
 }
 
 async function synthesizeUser(text, starName) {
+  await ensureTone().catch(() => {});
   if (typeof Tone === 'undefined') return;
   stopActiveAudio();
   await Tone.start();
@@ -571,82 +552,263 @@ async function synthesizeUser(text, starName) {
   activeAudio = { synth, delay: crusher, reverb, timerId, extras: [autoFilter] };
 }
 
-// ── Model loading (chunked) ──────────────────────────────
+// ── Model loading (ONNX WebGPU) ──────────────────────────
 let llm = null;
 
-async function fetchModel(onProgress) {
-  // Return cached assembled model if available
-  try {
-    const cache = await caches.open(MODEL_CACHE);
-    const hit   = await cache.match(ASSEMBLED_KEY);
-    if (hit) { onProgress(1); return new Uint8Array(await hit.arrayBuffer()); }
-  } catch(_) {}
-
-  // Load manifest
-  const manifest = await fetch(`${MODEL_BASE}/manifest.json`).then(r => r.json());
-  const { chunks, totalSize } = manifest;
-  let received = 0;
-
-  // Fetch all chunks in parallel, streaming each for progress
-  async function fetchChunk(name) {
-    const resp = await fetch(`${MODEL_BASE}/${name}`);
-    if (!resp.ok) throw new Error(`chunk ${name}: HTTP ${resp.status}`);
-    const reader = resp.body.getReader();
-    const parts  = [];
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      parts.push(value);
-      received += value.length;
-      onProgress(received / totalSize);
-    }
-    const len = parts.reduce((s, p) => s + p.length, 0);
-    const out = new Uint8Array(len);
-    let pos = 0;
-    for (const p of parts) { out.set(p, pos); pos += p.length; }
-    return out;
+async function ensureModelServiceWorker() {
+  if (!('serviceWorker' in navigator)) throw new Error('service worker unavailable');
+  const registration = await navigator.serviceWorker.register('{{ "/pulsar-model-sw.js" | relative_url }}');
+  if (!navigator.serviceWorker.controller) {
+    await navigator.serviceWorker.ready;
+    await new Promise(resolve => {
+      const timer = setTimeout(resolve, 800);
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        clearTimeout(timer);
+        resolve();
+      }, { once: true });
+    });
+  } else {
+    await registration.update().catch(() => {});
   }
+}
 
-  const fetched = await Promise.all(chunks.map(fetchChunk));
+async function validateJsonAsset(path) {
+  const url = `${MODEL_BASE}/${path}`;
+  const resp = await fetch(url, { cache: 'no-store' });
+  const text = await resp.text();
 
-  // Assemble
-  const assembled = new Uint8Array(totalSize);
-  let pos = 0;
-  for (const chunk of fetched) { assembled.set(chunk, pos); pos += chunk.length; }
+  if (!resp.ok) throw new Error(`${url}: HTTP ${resp.status}`);
+  if (!text.trim()) throw new Error(`${url}: empty JSON response`);
 
-  // Cache assembled buffer for future visits
   try {
-    const cache = await caches.open(MODEL_CACHE);
-    await cache.put(ASSEMBLED_KEY, new Response(assembled.buffer,
-      { headers: { 'content-length': String(totalSize) } }));
-  } catch(_) {}
-
-  return assembled;
+    JSON.parse(text);
+  } catch (err) {
+    throw new Error(`${url}: invalid JSON (${err.message})`);
+  }
 }
 
-async function initLLM(buffer) {
-  const fileset = await FilesetResolver.forGenAiTasks(MEDIAPIPE_WASM);
-  llm = await LlmInference.createFromOptions(fileset, {
-    baseOptions: { modelAssetBuffer: buffer },
-    maxTokens: 384,
-    randomSeed: 42,
-    topK: 40,
-    temperature: 0.95,
-  });
+async function validateModelAssets() {
+  await Promise.all([
+    'config.json',
+    'generation_config.json',
+    'tokenizer_config.json',
+    'tokenizer.json',
+    'manifest.json',
+  ].map(validateJsonAsset));
 }
 
-function runLLM(prompt, onToken) {
-  return new Promise((resolve, reject) => {
-    try {
-      llm.generateResponse(prompt, (partial, done) => { onToken(partial); if (done) resolve(); });
-    } catch(e) { reject(e); }
+async function initLLM(onProgress) {
+  if (llm) return llm;
+  if (!navigator.gpu) throw new Error('WebGPU not available');
+
+  onProgress(0.08);
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) throw new Error('WebGPU adapter not found');
+
+  onProgress(0.12);
+  console.log('[pulsar] validating model assets');
+  await validateModelAssets();
+
+  onProgress(0.16);
+  console.log('[pulsar] loading tokenizer');
+  const tokenizer = await AutoTokenizer.from_pretrained(MODEL_BASE, { local_files_only: true });
+
+  onProgress(0.2);
+  console.log('[pulsar] registering model service worker');
+  await ensureModelServiceWorker();
+  onProgress(0.72);
+
+  onProgress(0.74);
+  console.log('[pulsar] creating ONNX session');
+  const session = await ort.InferenceSession.create(ONNX_MODEL_URL, {
+    executionProviders: ['webgpu'],
+    externalData: [{ path: 'model_q4.onnx_data', data: ONNX_DATA_URL }],
   });
+  console.log('[pulsar] ONNX session ready');
+
+  llm = {
+    tokenizer,
+    session,
+    inputNames: new Set(session.inputNames),
+    outputNames: session.outputNames,
+  };
+  onProgress(1);
+  return llm;
+}
+
+function initCache() {
+  const cache = {};
+  for (const name of llm.session.inputNames) {
+    if (name.startsWith('past_conv')) {
+      cache[name] = new ort.Tensor(
+        'float32',
+        new Float32Array(LFM_HIDDEN_SIZE * 3),
+        [1, LFM_HIDDEN_SIZE, 3]
+      );
+    } else if (name.startsWith('past_key_values')) {
+      cache[name] = new ort.Tensor(
+        'float32',
+        new Float32Array(0),
+        [1, LFM_NUM_KV_HEADS, 0, LFM_HEAD_DIM]
+      );
+    }
+  }
+  return cache;
+}
+
+function updateCache(cache, outputs) {
+  for (const [name, tensor] of Object.entries(outputs)) {
+    if (name.startsWith('present_conv')) {
+      cache[name.replace('present_conv', 'past_conv')] = tensor;
+    } else if (name.startsWith('present.')) {
+      cache[name.replace('present.', 'past_key_values.')] = tensor;
+    }
+  }
+}
+
+function sampleToken(logitsData, vocabSize, generatedTokens) {
+  const logits = new Float32Array(logitsData);
+  for (const tokenId of new Set(generatedTokens)) {
+    if (tokenId >= vocabSize) continue;
+    logits[tokenId] = logits[tokenId] > 0
+      ? logits[tokenId] / REPETITION_PENALTY
+      : logits[tokenId] * REPETITION_PENALTY;
+  }
+  for (let i = 0; i < vocabSize; i++) logits[i] /= TEMPERATURE;
+
+  const indexed = Array.from(logits.slice(0, vocabSize), (v, i) => [v, i]);
+  indexed.sort((a, b) => b[0] - a[0]);
+  const topK = indexed.slice(0, TOP_K).filter(([v]) => Number.isFinite(v));
+  if (!topK.length) {
+    console.log('[pulsar] generation stopped: no token candidates', {
+      vocabSize,
+      logitsLength: logitsData?.length ?? 0,
+      generatedTokens: generatedTokens.length,
+    });
+    return null;
+  }
+  const maxLogit = topK[0][0];
+  let exps = topK.map(([v, i]) => [Math.exp(v - maxLogit), i]);
+  let sumExp = exps.reduce((s, [e]) => s + e, 0);
+  let r = Math.random();
+  for (const [e, i] of exps) {
+    r -= e / sumExp;
+    if (r <= 0) return i;
+  }
+  return exps[exps.length - 1][1];
+}
+
+function buildInputTensor(ids) {
+  return new ort.Tensor('int64', BigInt64Array.from(ids.map(BigInt)), [1, ids.length]);
+}
+
+function getLastLogits(logits) {
+  const dims = logits.dims;
+  if (dims.length === 1) {
+    return { data: logits.data, vocabSize: dims[0] };
+  }
+  if (dims.length === 2) {
+    const vocabSize = dims[1];
+    return { data: logits.data.slice(logits.data.length - vocabSize), vocabSize };
+  }
+  if (dims.length === 3) {
+    const vocabSize = dims[2];
+    const start = (dims[1] - 1) * vocabSize;
+    return { data: logits.data.slice(start, start + vocabSize), vocabSize };
+  }
+  throw new Error(`unsupported logits shape: ${dims.join('x')}`);
+}
+
+async function runLLM(prompt, onToken) {
+  const tokenizer = llm.tokenizer;
+  const messages = [{ role: 'user', content: prompt }];
+  const templated = tokenizer.apply_chat_template
+    ? tokenizer.apply_chat_template(messages, { add_generation_prompt: true, tokenize: false })
+    : prompt;
+  console.log('[pulsar] chat template →', templated);
+  const inputIds = tokenizer.encode(templated);
+  const cache = initCache();
+  const generatedTokens = [];
+  const eosTokenId = 7;
+  const usePositionIds = llm.inputNames.has('position_ids');
+  const useNumLogitsToKeep = llm.inputNames.has('num_logits_to_keep');
+  let emitted = '';
+  let ids = inputIds;
+  let curLen = inputIds.length;
+  let stopped = false;
+
+  for (let step = 0; step < MAX_NEW_TOKENS; step++) {
+    const feed = {
+      input_ids: buildInputTensor(ids),
+      attention_mask: new ort.Tensor('int64', new BigInt64Array(curLen).fill(1n), [1, curLen]),
+      ...cache,
+    };
+    if (useNumLogitsToKeep) {
+      feed.num_logits_to_keep = new ort.Tensor('int64', BigInt64Array.from([1n]), [1]);
+    }
+    if (usePositionIds) {
+      const pos = step === 0
+        ? Array.from({ length: ids.length }, (_, i) => i)
+        : [curLen - 1];
+      feed.position_ids = buildInputTensor(pos);
+    }
+
+    const outputs = await llm.session.run(feed);
+    const logits = outputs.logits || outputs[llm.outputNames[0]];
+    const lastLogits = getLastLogits(logits);
+    const nextToken = sampleToken(
+      lastLogits.data,
+      lastLogits.vocabSize,
+      generatedTokens
+    );
+
+    updateCache(cache, outputs);
+    if (nextToken === null) {
+      stopped = true;
+      break;
+    }
+    if (nextToken === eosTokenId) {
+      console.log('[pulsar] generation stopped: eos', {
+        step,
+        visibleWords: extractPulsarWords(emitted).length,
+        generatedTokens: generatedTokens.length,
+      });
+      stopped = true;
+      break;
+    }
+    generatedTokens.push(nextToken);
+    ids = [nextToken];
+    curLen++;
+
+    const decoded = tokenizer.decode(generatedTokens, { skip_special_tokens: true });
+    if (decoded.length > emitted.length) {
+      onToken(decoded.slice(emitted.length));
+      emitted = decoded;
+      await new Promise(r => setTimeout(r, 0));
+    }
+    if (extractPulsarWords(decoded).length >= TARGET_WORDS) {
+      console.log('[pulsar] generation stopped: target words', {
+        step,
+        visibleWords: extractPulsarWords(decoded).length,
+        generatedTokens: generatedTokens.length,
+      });
+      stopped = true;
+      break;
+    }
+  }
+  if (!stopped) {
+    console.log('[pulsar] generation stopped: max tokens', {
+      maxNewTokens: MAX_NEW_TOKENS,
+      visibleWords: extractPulsarWords(emitted).length,
+      generatedTokens: generatedTokens.length,
+    });
+  }
 }
 
 // ── State ─────────────────────────────────────────────────
 const state = {
   starName: null, distance: null, power: 3,
-  activeTab: 'text', imageCanvas: null, audioAmplitudes: null, transmitting: false,
+  transmitting: false,
 };
 
 // ── UI helpers ────────────────────────────────────────────
@@ -669,7 +831,6 @@ function updateSignals() {
 }
 
 function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function escAttr(s) { return s.replace(/"/g,'&quot;'); }
 
 function appendUserMsg(original) {
   const div = document.createElement('div');
@@ -702,22 +863,13 @@ function scrollMsgs() {
 // ── Send ──────────────────────────────────────────────────
 async function sendMessage() {
   if (state.transmitting) return;
-  let original = '';
-  if (state.activeTab === 'text') {
-    original = document.getElementById('msg-input').value.trim();
-    if (!original) return;
-  } else if (state.activeTab === 'image') {
-    if (!state.imageCanvas) return;
-    original = `[VISUAL SIGNAL: ${state.imageCanvas.width}×${state.imageCanvas.height}px, dominant hue #${dominantHex(state.imageCanvas)}]`;
-  } else {
-    if (!state.audioAmplitudes) return;
-    original = `[AUDIO SIGNAL: waveform ${ampToWave(state.audioAmplitudes)}]`;
-  }
+  const original = document.getElementById('msg-input').value.trim();
+  if (!original) return;
 
   state.transmitting = true;
   const sendBtn = document.getElementById('btn-send');
   sendBtn.disabled = true;
-  if (state.activeTab === 'text') document.getElementById('msg-input').value = '';
+  document.getElementById('msg-input').value = '';
 
   // Send animation: cycle dots on button for ~700ms before proceeding
   const sendLabels = ['Transmitting ·', 'Transmitting ··', 'Transmitting ···'];
@@ -744,13 +896,15 @@ async function sendMessage() {
 
   try {
     await runLLM(prompt, partial => { fullResp += partial; });
-  } catch(_) {
-    fullResp = '░ lost ░';
+  } catch(e) {
+    console.error('[pulsar] generation failed', e);
   }
+  fullResp = normalizePulsarWords(fullResp, `${state.starName}:${original}:${corrupted}`);
 
   console.log('[pulsar] response ←', fullResp);
 
-  pendingEl.setAttribute('hidden', '');
+  pendingEl.classList.remove('p-typing');
+  pendingEl.textContent = fullResp;
   actionsEl.removeAttribute('hidden');
   const replayBtn = actionsEl.querySelector('.p-replay-btn');
   replayBtn.dataset.text = fullResp;
@@ -765,94 +919,17 @@ async function sendMessage() {
   }
 }
 
-// ── Audio recording ───────────────────────────────────────
-async function startRecording() {
-  const btn = document.getElementById('btn-record');
-  const waveEl = document.getElementById('waveform-display');
-  btn.disabled = true; btn.textContent = '● recording…';
-  let stream;
-  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-  catch { btn.disabled = false; btn.textContent = '⬤ Record (5s)'; waveEl.textContent = '⚠ mic denied'; return; }
-
-  const ctx      = new AudioContext();
-  const src      = ctx.createMediaStreamSource(stream);
-  const analyser = ctx.createAnalyser();
-  analyser.fftSize = 256;
-  src.connect(analyser);
-
-  const N = 24;
-  const buf = new Uint8Array(analyser.frequencyBinCount);
-  const peaks = [];
-
-  // Sample peak amplitude N times across the 5s recording
-  const sampleTimer = setInterval(() => {
-    analyser.getByteTimeDomainData(buf);
-    let peak = 0;
-    for (let i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i] - 128) / 128);
-    peaks.push(peak);
-  }, 5000 / N);
-
-  const rec = new MediaRecorder(stream);
-  rec.onstop = () => {
-    clearInterval(sampleTimer);
-    stream.getTracks().forEach(t => t.stop());
-    ctx.close();
-    // Downsample to exactly N bins
-    const amps = Array.from({length: N}, (_, i) => {
-      const a = Math.floor(i * peaks.length / N), b = Math.floor((i + 1) * peaks.length / N);
-      let max = 0;
-      for (let j = a; j < b; j++) max = Math.max(max, peaks[j] || 0);
-      return max;
-    });
-    // Normalize so the loudest bin fills the display
-    const maxAmp = Math.max(...amps, 0.01);
-    const normalized = amps.map(v => v / maxAmp);
-    state.audioAmplitudes = normalized;
-    waveEl.textContent = ampToWave(normalized);
-    document.getElementById('btn-send').disabled = false;
-    btn.disabled = false; btn.textContent = '⬤ Record again';
-  };
-  rec.start();
-  let cd = 5;
-  const tick = setInterval(() => {
-    btn.textContent = `● ${--cd}s…`;
-    if (cd <= 0) { clearInterval(tick); rec.stop(); }
-  }, 1000);
-}
-
-// ── Image ─────────────────────────────────────────────────
-function loadImageFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const MAX = 420, scale = Math.min(1, MAX / Math.max(img.width, img.height));
-      const canvas = document.getElementById('img-canvas');
-      canvas.width  = Math.round(img.width  * scale);
-      canvas.height = Math.round(img.height * scale);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      applyCanvasCorruption(canvas, state.starName);
-      document.getElementById('img-drop-label').textContent = `signal ready (${img.width}×${img.height})`;
-      state.imageCanvas = canvas;
-      document.getElementById('btn-send').disabled = false;
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
 // ── Reset ─────────────────────────────────────────────────
 function resetAll() {
   stopActiveAudio();
   state.starName = null; state.distance = null; state.power = 3;
-  state.activeTab = 'text'; state.imageCanvas = null; state.audioAmplitudes = null;
   state.transmitting = false;
-  if (llm) { try { llm.close(); } catch(_){} llm = null; }
+  if (llm) {
+    try { llm.session.release(); } catch(_) {}
+    llm = null;
+  }
   document.getElementById('msg-list').innerHTML = '';
   document.getElementById('msg-input').value = '';
-  document.getElementById('img-canvas').setAttribute('hidden','');
-  document.getElementById('img-drop-label').innerHTML = 'Drop image or <label for="img-file-input" style="cursor:pointer;color:#2a7ae2">select file</label>';
-  document.getElementById('waveform-display').textContent = '';
   document.getElementById('input-area').removeAttribute('hidden');
   document.getElementById('session-end').setAttribute('hidden', '');
   document.getElementById('btn-abort').textContent = 'Abort';
@@ -868,20 +945,30 @@ function resetAll() {
 
 // ── Boot ──────────────────────────────────────────────────
 function init() {
-  // Kick off model download immediately in the background
+  // Kick off model initialization immediately in the background when WebGPU is available.
   const hintEl  = document.getElementById('model-hint');
   const fillEl  = document.getElementById('progress-fill');
 
-  const modelBufferPromise = fetchModel(p => {
-    hintEl.textContent = p < 1
-      ? `preparing… ${Math.round(p * 100)}%`
-      : 'ready';
-    // Also update prepare-screen bar if visible
-    if (!fillEl.classList.contains('scanning')) fillEl.style.width = (p * 100) + '%';
-  }).catch(err => {
-    hintEl.textContent = 'model unavailable';
-    return Promise.reject(err);
-  });
+  let modelReadyPromise = null;
+  const startModel = () => {
+    if (!modelReadyPromise) {
+      modelReadyPromise = initLLM(p => {
+        hintEl.textContent = p < 1
+          ? `preparing… ${Math.round(p * 100)}%`
+          : 'ready';
+        if (!fillEl.classList.contains('scanning')) fillEl.style.width = (p * 100) + '%';
+      }).catch(err => {
+        console.error('[pulsar] model init failed', err);
+        hintEl.textContent = 'model unavailable';
+        modelReadyPromise = null;
+        return Promise.reject(err);
+      });
+    }
+    return modelReadyPromise;
+  };
+
+  if (navigator.gpu) startModel().catch(() => {});
+  else hintEl.textContent = 'webgpu unavailable';
 
   // Connect button
   document.getElementById('btn-connect').addEventListener('click', async () => {
@@ -906,12 +993,12 @@ function init() {
 
     try {
       document.getElementById('progress-label').textContent = 'preparing equipment…';
-      const [buffer] = await Promise.all([
-        modelBufferPromise,
+      await Promise.all([
+        startModel(),
         new Promise(r => setTimeout(r, 1800)),
       ]);
       document.getElementById('progress-label').textContent = 'connecting…';
-      await Promise.all([initLLM(buffer), new Promise(r => setTimeout(r, 600))]);
+      await new Promise(r => setTimeout(r, 600));
       // Crawl from 0 → 98 via rAF so the full range is smooth (no CSS-transition jump)
       await new Promise(resolve => {
         let pct = parseFloat(fillEl.style.width) || 0;
@@ -931,31 +1018,16 @@ function init() {
       updateSignals();
       document.getElementById('btn-send').disabled = false;
     } catch(e) {
-      document.getElementById('progress-label').textContent = `error: ${e.message}`;
+      console.error('[pulsar] connect failed', e);
+      const detail = e?.message || e?.toString?.() || JSON.stringify(e) || 'unknown error';
+      document.getElementById('progress-label').textContent = `error: ${detail}`;
       fillEl.style.background = '#d32f2f';
     }
   });
 
-  // Tabs
-  document.querySelectorAll('.p-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.p-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      state.activeTab = tab.dataset.tab;
-      ['text','image','audio'].forEach(id => {
-        document.getElementById('tab-' + id)[id === state.activeTab ? 'removeAttribute' : 'setAttribute']('hidden','');
-      });
-      const ok = (state.activeTab === 'text'  && document.getElementById('msg-input').value.trim()) ||
-                 (state.activeTab === 'image' && state.imageCanvas) ||
-                 (state.activeTab === 'audio' && state.audioAmplitudes);
-      document.getElementById('btn-send').disabled = !ok || state.transmitting;
-    });
-  });
-
   document.getElementById('msg-input').addEventListener('input', () => {
-    if (state.activeTab === 'text')
-      document.getElementById('btn-send').disabled =
-        !document.getElementById('msg-input').value.trim() || state.transmitting;
+    document.getElementById('btn-send').disabled =
+      !document.getElementById('msg-input').value.trim() || state.transmitting;
   });
 
   document.getElementById('btn-send').addEventListener('click', () => { sendMessage(); });
@@ -968,22 +1040,6 @@ function init() {
   document.getElementById('msg-input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey && !state.transmitting && state.power > 0) { e.preventDefault(); sendMessage(); }
   });
-
-  // Image drop
-  const imgDrop = document.getElementById('img-drop');
-  imgDrop.addEventListener('dragover', e => { e.preventDefault(); imgDrop.classList.add('drag-over'); });
-  imgDrop.addEventListener('dragleave', () => imgDrop.classList.remove('drag-over'));
-  imgDrop.addEventListener('drop', e => {
-    e.preventDefault(); imgDrop.classList.remove('drag-over');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) loadImageFile(f);
-  });
-  document.getElementById('img-file-input').addEventListener('change', e => {
-    if (e.target.files[0]) loadImageFile(e.target.files[0]);
-  });
-
-  // Audio
-  document.getElementById('btn-record').addEventListener('click', startRecording);
 
   // Replay (delegated)
   document.getElementById('msg-list').addEventListener('click', e => {

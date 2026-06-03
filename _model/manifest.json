@@ -1,11 +1,15 @@
 {
-  "model": "litert-community/gemma-3-270m-it",
-  "source": "https://huggingface.co/litert-community/gemma-3-270m-it",
-  "license": "gemma",
-  "terms": "https://ai.google.dev/gemma/terms",
-  "prohibitedUsePolicy": "https://ai.google.dev/gemma/prohibited_use_policy",
+  "model": "LiquidAI/LFM2.5-350M-ONNX",
+  "source": "https://huggingface.co/LiquidAI/LFM2.5-350M-ONNX",
+  "license": "lfm1.0",
+  "terms": "https://huggingface.co/LiquidAI/LFM2.5-350M-ONNX/blob/main/LICENSE",
+  "variant": "Q4",
+  "onnxModel": "model_q4.onnx",
+  "onnxModelSize": 183442,
+  "onnxExternalData": "model_q4.onnx_data",
+  "externalDataChunks": ["chunk_00", "chunk_01", "chunk_02", "chunk_03"],
+  "externalDataSize": 293629952,
+  "tokenizerFiles": ["config.json", "generation_config.json", "tokenizer.json", "tokenizer_config.json"],
   "notice": "NOTICE.txt",
-  "modificationNotice": "The original LiteRT model artifact was split into chunk_00, chunk_01, and chunk_02 for static web hosting. The model weights were not otherwise modified.",
-  "chunks": ["chunk_00", "chunk_01", "chunk_02"],
-  "totalSize": 276168704
+  "modificationNotice": "The upstream Q4 ONNX external data file was split into chunk_00, chunk_01, chunk_02, and chunk_03 for static web hosting. The model weights were not otherwise modified."
 }
