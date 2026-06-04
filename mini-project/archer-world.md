@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Archer World
-description: Roll a glass marble across Archer World.
+description: Guide it through the Archer World.
 mini_project: true
 project_order: 2
 preview: archer-world
