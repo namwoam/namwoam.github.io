@@ -1,0 +1,9 @@
+{% assign mini_projects = site.pages | where: "mini_project", true | sort: "project_order" %}
+<nav class="mini-project-nav" aria-label="Mini projects">
+  <a href="{{ '/mini-project/' | relative_url }}">All mini projects</a>
+  {% for project in mini_projects %}
+    <a href="{{ project.url | relative_url }}"{% if page.url == project.url %} aria-current="page"{% endif %}>
+      {{ project.title | escape }}
+    </a>
+  {% endfor %}
+</nav>

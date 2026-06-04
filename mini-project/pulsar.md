@@ -1,8 +1,14 @@
 ---
 layout: default
 title: Pulsar
-permalink: /pulsar/
+description: Talk across deep space to a distant pulsar.
+mini_project: true
+project_order: 1
+preview: pulsar
+permalink: /mini-project/pulsar/
 ---
+
+{% include mini-project-nav.html %}
 
 # Pulsar
 <style>
