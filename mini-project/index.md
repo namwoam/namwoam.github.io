@@ -20,6 +20,10 @@ Small experiments and interactive things.
       <span class="pulsar-preview-ring pulsar-preview-ring-two"></span>
       <span class="pulsar-preview-star"></span>
     </div>
+    {% elsif project.preview == "archer-world" %}
+    <div class="archer-world-preview" aria-hidden="true">
+      <span class="archer-world-preview-marble"></span>
+    </div>
     {% endif %}
     <h2>{{ project.title | escape }}</h2>
     <p>{{ project.description | escape }}</p>

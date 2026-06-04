@@ -215,13 +215,46 @@ body {
     animation-delay: 1s;
 }
 
+.archer-world-preview {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    width: 96px;
+    height: 72px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    background: #f7eed8 url("/assets/archer-world.png") center 26% / cover no-repeat;
+}
+
+.archer-world-preview-marble {
+    position: absolute;
+    top: 14px;
+    left: 17px;
+    width: 19px;
+    height: 19px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 32% 25%, rgba(255,255,255,0.95) 0 6%, transparent 28%),
+        linear-gradient(145deg, rgba(255,255,255,0.35), rgba(64,169,198,0.55));
+    box-shadow: inset -3px -3px 5px rgba(7, 25, 38, 0.28), 0 3px 3px rgba(0,0,0,0.25);
+    animation: archer-world-roll 4.5s ease-in-out infinite;
+}
+
+@keyframes archer-world-roll {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(47px, 35px) rotate(540deg); }
+}
+
 @keyframes pulsar-pulse {
     0% { opacity: 0.8; transform: scale(0.5); }
     100% { opacity: 0; transform: scale(2.5); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pulsar-preview-ring {
+    .pulsar-preview-ring,
+    .archer-world-preview-marble {
         animation-play-state: paused;
     }
 }
