@@ -138,6 +138,46 @@ permalink: /mini-project/archer-world/
   user-select: none;
   -webkit-user-select: none;
 }
+.aw-command-cast {
+  --tilt: -1deg;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: 5.6rem;
+  background: linear-gradient(90deg, #1559a0 0 0.42rem, #f5e8c9 0);
+  color: #d9221d;
+  font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.68rem, 1.65vw, 0.86rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.05;
+  text-transform: lowercase;
+  box-shadow: 0 5px 13px rgba(44, 35, 18, 0.16), inset 0 -0.13rem #d9221d;
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: 0.4rem 50%;
+  will-change: transform, opacity;
+}
+.aw-command-cast::before {
+  content: "";
+  width: 0.42rem;
+  flex: 0 0 0.42rem;
+}
+.aw-command-cast::after {
+  content: "";
+  width: 0.9rem;
+  flex: 0 0 0.9rem;
+  background: #111;
+}
+.aw-command-cast-text {
+  display: block;
+  padding: 0.27rem 0.46rem 0.34rem;
+  transform: skewX(var(--tilt));
+}
 .aw-surface {
   position: relative;
   width: 100%;
@@ -519,12 +559,67 @@ Reply only: L, R, U, or D`;
   function parseAction(response) {
     const direction = response.match(/[LRUD]/)?.[0];
     const actions = {
-      L: { direction: 'walk west',  moveX: -1, moveY: 0 },
-      R: { direction: 'walk east',  moveX: 1,  moveY: 0 },
-      U: { direction: 'walk north', moveX: 0,  moveY: -1 },
-      D: { direction: 'walk south', moveX: 0,  moveY: 1 },
+      L: { label: 'move west',  moveX: -1, moveY: 0 },
+      R: { label: 'move east',  moveX: 1,  moveY: 0 },
+      U: { label: 'move north', moveX: 0,  moveY: -1 },
+      D: { label: 'move south', moveX: 0,  moveY: 1 },
     };
     return actions[direction] || null;
+  }
+
+  function castCommand(label) {
+    const buttonRect = agentButton.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    const command = document.createElement('span');
+    const commandText = document.createElement('span');
+    command.className = 'aw-command-cast';
+    commandText.className = 'aw-command-cast-text';
+    commandText.textContent = label;
+    command.style.setProperty('--tilt', `${(Math.random() - 0.5) * 6}deg`);
+    command.appendChild(commandText);
+    document.body.appendChild(command);
+
+    if (reducedMotion) {
+      command.style.transform = `translate(${buttonRect.right}px, ${buttonRect.bottom}px)`;
+      command.style.opacity = '0';
+      setTimeout(() => command.remove(), 180);
+      return;
+    }
+
+    const start = {
+      x: buttonRect.left + buttonRect.width * 0.58,
+      y: buttonRect.top + buttonRect.height * 0.55,
+    };
+    const floor = stageRect.bottom + Math.min(88, stageRect.height * 0.08);
+    const velocity = {
+      x: stageRect.width * 0.44,
+      y: -stageRect.height * 0.16,
+    };
+    const gravity = stageRect.height * 0.78;
+    const fadeStart = stageRect.bottom - stageRect.height * 0.12;
+    const spinStart = (Math.random() - 0.5) * 8;
+    const spinDirection = Math.random() < 0.5 ? -1 : 1;
+    const spinVelocity = spinDirection * (6 + Math.random() * 8);
+    const started = performance.now();
+
+    function animate(now) {
+      const elapsed = (now - started) / 1000;
+      const x = start.x + velocity.x * elapsed;
+      const y = start.y + velocity.y * elapsed + 0.5 * gravity * elapsed * elapsed;
+      const floorProgress = clamp((y - fadeStart) / (floor - fadeStart), 0, 1);
+
+      command.style.transform = `translate(${x}px, ${y}px) rotate(${spinStart + elapsed * spinVelocity}deg)`;
+      command.style.opacity = `${1 - floorProgress * 0.85}`;
+
+      if (y >= floor) {
+        command.style.opacity = '0';
+        command.remove();
+        return;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
   }
 
   function moveTarget() {
@@ -563,6 +658,7 @@ Reply only: L, R, U, or D`;
       agent.actions.push(response.match(/[LRUD]/)[0]);
       agent.actions = agent.actions.slice(-3);
       thoughtEl.textContent = '';
+      castCommand(action.label);
       moveBall(action.moveX, action.moveY);
       await wait(900);
       await wait(300);
