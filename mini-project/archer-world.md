@@ -129,6 +129,14 @@ permalink: /mini-project/archer-world/
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.aw-model-license {
+  max-width: 650px;
+  margin: 0.8rem auto 0;
+  color: #aaa;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.aw-model-license a { color: #828282; }
 .aw-stage {
   position: relative;
   max-width: 650px;
@@ -320,6 +328,16 @@ permalink: /mini-project/archer-world/
       <span class="aw-marble-specular"></span>
     </span>
   </div>
+</div>
+
+<div class="aw-model-license">
+  Local model based on
+  <a href="https://huggingface.co/litert-community/gemma-3-270m-it">litert-community/gemma-3-270m-it</a>,
+  subject to the
+  <a href="https://ai.google.dev/gemma/terms">Gemma Terms of Use</a>
+  and
+  <a href="https://ai.google.dev/gemma/prohibited_use_policy">Gemma Prohibited Use Policy</a>.
+  <a href="{{ '/_model/NOTICE.txt' | relative_url }}">Notice</a>.
 </div>
 
 <script type="module">
