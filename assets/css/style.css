@@ -593,19 +593,23 @@ a:hover {
 .thought-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     margin-top: 20px;
 }
 
 .thought-item {
     border-left: 3px solid #e8e8e8;
-    padding: 12px 16px;
+    padding: 8px;
 }
 
 .thought-content {
     margin: 0 0 8px;
     font-size: 1rem;
     line-height: 1.7;
+}
+
+.thought-content > :first-child {
+    margin-top: 0;
 }
 
 .thought-content > :last-child {
