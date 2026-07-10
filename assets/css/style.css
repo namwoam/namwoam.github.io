@@ -606,7 +606,10 @@ a:hover {
     margin: 0 0 8px;
     font-size: 1rem;
     line-height: 1.7;
-    white-space: pre-wrap;
+}
+
+.thought-content > :last-child {
+    margin-bottom: 0;
 }
 
 .thought-meta {

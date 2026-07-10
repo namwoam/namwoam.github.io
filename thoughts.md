@@ -10,7 +10,7 @@ permalink: /thoughts/
 {% assign thoughts = site.data.thoughts | sort: "timestamp" | reverse %}
 {% for thought in thoughts %}
   <div class="thought-item">
-    <p class="thought-content">{{ thought.content }}</p>
+    <div class="thought-content">{{ thought.content | markdownify }}</div>
     <p class="thought-meta">{{ thought.timestamp | date: "%b %-d, %Y · %H:%M UTC" }}</p>
   </div>
 {% endfor %}
