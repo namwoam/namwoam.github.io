@@ -24,6 +24,7 @@ My [resume](./files/resume.pdf).
 
 Full-time experiences
 
+- Machine Learning Engineer Interm - AMD (June 2026-Sep 2026)
 - Machine Learning Engineer Intern — NetBase Quid (Sep 2024–May 2025)
 - AI Engineer Intern — Instill AI (Jun 2024–Sep 2024)
 - Embedded Systems Engineer Intern — Taiwan Space Agency (Jun 2023–Sep 2023)
@@ -32,6 +33,7 @@ Full-time experiences
 Part-time & volunteer work
 
 - Teaching Assistant — National Taiwan University
+    - IM5056 Statistical Learning and Deep Learning - Lead TA (2026)
     - IM3007 Systems Analysis and Design (2026)
     - IM3014 Linux System Administration Practice — Lead TA (2025)
     - IM1003 Programming Design (2024)
