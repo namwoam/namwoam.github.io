@@ -24,7 +24,7 @@ My [resume](./files/resume.pdf).
 
 Full-time experiences
 
-- Machine Learning Engineer Interm - AMD (June 2026-Sep 2026)
+- Machine Learning Engineer Interm — AMD (June 2026-Sep 2026)
 - Machine Learning Engineer Intern — NetBase Quid (Sep 2024–May 2025)
 - AI Engineer Intern — Instill AI (Jun 2024–Sep 2024)
 - Embedded Systems Engineer Intern — Taiwan Space Agency (Jun 2023–Sep 2023)
@@ -33,7 +33,7 @@ Full-time experiences
 Part-time & volunteer work
 
 - Teaching Assistant — National Taiwan University
-    - IM5056 Statistical Learning and Deep Learning - Lead TA (2026)
+    - IM5056 Statistical Learning and Deep Learning — Lead TA (2026)
     - IM3007 Systems Analysis and Design (2026)
     - IM3014 Linux System Administration Practice — Lead TA (2025)
     - IM1003 Programming Design (2024)
@@ -45,6 +45,8 @@ Part-time & volunteer work
 - Electrical System Engineer — National Taiwan University Formula SAE Team (2023)
 
 # Publications
+
+- **Demo: Fragmented Sunshine of the Spotless Mind**<br />An-Che Liang, Le-Yun Chen, Yung-Chin Chen and Rung-Huei Liang<br />*TAICHI 2026 Demo* <br /> [paper](/files/2026_taichi.pdf)
 
 - **Heuristic Algorithms on Flexible Flow Shop with Unrelated Machines, Setup Time, Limited Storage Capacity, and Specification Constraint**<br />An-Che Liang, Wei-Hsiang Huang, Debbie Huang, You-Ming Yeh and Ling-Chieh Kung<br />*CIIE 2025* <br /> [paper](/files/2025_ciie.pdf)
 
