@@ -46,7 +46,7 @@ Part-time & volunteer work
 
 # Publications
 
-- **Demo: Fragmented Sunshine of the Spotless Mind**<br />An-Che Liang, Le-Yun Chen, Yung-Chin Chen and Rung-Huei Liang<br />*TAICHI 2026 Demo* <br /> [paper](/files/2026_taichi.pdf)
+- **Demo: Fragmented Sunshine of the Spotless Mind**<br />An-Che Liang, Le-Yun Chen, Yung-Chin Chen and Rung-Huei Liang<br />*TAICHI 2026 Demo Track* <br /> [paper](/files/2026_taichi.pdf)
 
 - **Heuristic Algorithms on Flexible Flow Shop with Unrelated Machines, Setup Time, Limited Storage Capacity, and Specification Constraint**<br />An-Che Liang, Wei-Hsiang Huang, Debbie Huang, You-Ming Yeh and Ling-Chieh Kung<br />*CIIE 2025* <br /> [paper](/files/2025_ciie.pdf)
 
