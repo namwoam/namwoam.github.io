@@ -24,7 +24,7 @@ My [resume](./files/resume.pdf).
 
 Full-time experiences
 
-- Machine Learning Engineer Interm — AMD (June 2026-Sep 2026)
+- Machine Learning Engineer Intern — AMD (June 2026-Sep 2026)
 - Machine Learning Engineer Intern — NetBase Quid (Sep 2024–May 2025)
 - AI Engineer Intern — Instill AI (Jun 2024–Sep 2024)
 - Embedded Systems Engineer Intern — Taiwan Space Agency (Jun 2023–Sep 2023)
